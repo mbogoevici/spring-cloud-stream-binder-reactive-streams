@@ -18,28 +18,32 @@ package org.springframework.cloud.stream.binder.kafka.reactive.test;
 
 import reactor.core.publisher.Flux;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.annotation.StreamListener;
-import org.springframework.messaging.handler.annotation.SendTo;
 
 /**
  * @author Marius Bogoevici
  */
 @EnableBinding(ReactiveProcessor.class)
 @SpringBootApplication
-public class KafkaReactiveApplication {
+public class KafkaReactiveApplication
+implements CommandLineRunner
+{
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(KafkaReactiveApplication.class, args);
 	}
 
-	@StreamListener("input")
-	@SendTo("output")
-	public Flux<String> echo(Flux<String> input) {
-		return input.log().map(x -> {
-			return x.toUpperCase();
-		}).log();
+	@Autowired
+	ReactiveProcessor processor;
+
+	@Override
+	public void run(String... strings) throws Exception {
+		Flux<?> just = Flux.just("1", "2", "3");
+		processor.output().send(just);
 	}
 }

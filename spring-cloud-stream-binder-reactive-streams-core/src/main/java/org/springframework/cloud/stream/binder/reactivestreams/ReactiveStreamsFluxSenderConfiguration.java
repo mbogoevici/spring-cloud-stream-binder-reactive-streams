@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.stream.binder.kafka.reactive.test;
+package org.springframework.cloud.stream.binder.reactivestreams;
 
-import org.reactivestreams.Publisher;
-
-import org.springframework.cloud.stream.annotation.Input;
-import org.springframework.cloud.stream.annotation.Output;
-import org.springframework.cloud.stream.reactive.FluxSender;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author Marius Bogoevici
  */
-public interface ReactiveProcessor {
+@Configuration
+public class ReactiveStreamsFluxSenderConfiguration {
 
-	@Input
-	Publisher<?> input();
-
-	@Output
-	FluxSender output();
+	@Bean
+	public ReactiveStreamsFluxSenderBinder fluxSenderBinder() {
+		return new ReactiveStreamsFluxSenderBinder();
+	}
 }

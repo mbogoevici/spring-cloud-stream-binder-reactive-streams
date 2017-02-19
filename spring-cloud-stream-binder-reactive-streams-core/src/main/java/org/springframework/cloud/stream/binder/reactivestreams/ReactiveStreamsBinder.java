@@ -17,8 +17,6 @@
 package org.springframework.cloud.stream.binder.reactivestreams;
 
 import org.reactivestreams.Publisher;
-import reactor.core.Disposable;
-import reactor.core.publisher.Flux;
 
 import org.springframework.cloud.stream.binder.AbstractBinder;
 import org.springframework.cloud.stream.binder.Binding;
@@ -54,21 +52,30 @@ public class ReactiveStreamsBinder extends AbstractBinder<Publisher, ConsumerPro
 
 	@Override
 	protected Binding<Publisher> doBindProducer(String name, Publisher outboundBindTarget, ProducerProperties properties) {
-		Disposable subscribe = Flux.from(outboundBindTarget).subscribe();
-		return new DefaultBinding<>(name, null, outboundBindTarget, new Lifecycle() {
-			@Override
-			public void start() {
-			}
-
-			@Override
-			public void stop() {
-				subscribe.dispose();
-			}
-
-			@Override
-			public boolean isRunning() {
-				return false;
-			}
-		});
+		throw new UnsupportedOperationException();
+//		Properties configProperties = new Properties();
+//		configProperties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+//		configProperties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+//		configProperties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+//		Disposable subscribe = Sender
+//									   .create(SenderOptions.create(configProperties))
+//									   .outbound()
+//									   .send(((DefaultOutputPublisher)outboundBindTarget).getInternalFlux().log().map(x -> new ProducerRecord<>(name, x)))
+//									   .then().subscribe();
+//		return new DefaultBinding<>(name, null, outboundBindTarget, new Lifecycle() {
+//			@Override
+//			public void start() {
+//			}
+//
+//			@Override
+//			public void stop() {
+//				subscribe.dispose();
+//			}
+//
+//			@Override
+//			public boolean isRunning() {
+//				return false;
+//			}
+//		});
 	}
 }

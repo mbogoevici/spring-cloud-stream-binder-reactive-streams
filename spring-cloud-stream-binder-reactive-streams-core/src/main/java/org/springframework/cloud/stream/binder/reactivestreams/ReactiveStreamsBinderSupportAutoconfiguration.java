@@ -32,8 +32,13 @@ public class ReactiveStreamsBinderSupportAutoconfiguration {
 	}
 
 	@Bean
-	public ReactiveStreamsFluxResultAdapter fluxResultAdapter() {
-		return new ReactiveStreamsFluxResultAdapter();
+	public FluxSenderFactory fluxSenderFactory() {
+		return new FluxSenderFactory();
+	}
+
+	@Bean
+	public ReactiveStreamsFluxSenderResultAdapter fluxSenderResultAdapter() {
+		return new ReactiveStreamsFluxSenderResultAdapter();
 	}
 
 	@Bean

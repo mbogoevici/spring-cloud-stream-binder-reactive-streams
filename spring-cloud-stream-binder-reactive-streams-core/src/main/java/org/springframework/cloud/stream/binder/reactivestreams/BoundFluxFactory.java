@@ -55,11 +55,7 @@ public class BoundFluxFactory implements BindingTargetFactory {
 	}
 
 	public Object createOutput(String name) {
-		Properties configProperties = new Properties();
-		configProperties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-		configProperties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-		configProperties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-		return Sender.create(SenderOptions.create(configProperties)).outbound();
+		throw new UnsupportedOperationException();
 	}
 
 }

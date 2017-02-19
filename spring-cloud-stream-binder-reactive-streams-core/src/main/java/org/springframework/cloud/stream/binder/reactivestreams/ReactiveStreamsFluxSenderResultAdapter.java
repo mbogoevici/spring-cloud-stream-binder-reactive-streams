@@ -14,22 +14,28 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.stream.binder.kafka.reactive.test;
+package org.springframework.cloud.stream.binder.reactivestreams;
 
 import org.reactivestreams.Publisher;
+import reactor.core.publisher.Flux;
 
-import org.springframework.cloud.stream.annotation.Input;
-import org.springframework.cloud.stream.annotation.Output;
+import org.springframework.cloud.stream.binding.StreamListenerResultAdapter;
 import org.springframework.cloud.stream.reactive.FluxSender;
 
 /**
  * @author Marius Bogoevici
  */
-public interface ReactiveProcessor {
+public class ReactiveStreamsFluxSenderResultAdapter implements StreamListenerResultAdapter<Publisher, FluxSender> {
 
-	@Input
-	Publisher<?> input();
+	@Override
+	public boolean supports(Class<?> resultType, Class<?> bindingTarget) {
+		return Publisher.class.isAssignableFrom(resultType)
+				&& Publisher.class.isAssignableFrom(bindingTarget);
+	}
 
-	@Output
-	FluxSender output();
+	@Override
+	public void adapt(Publisher streamListenerResult, FluxSender bindingTarget) {
+		bindingTarget.send(Flux.from(streamListenerResult)).retry();
+	}
 }
+

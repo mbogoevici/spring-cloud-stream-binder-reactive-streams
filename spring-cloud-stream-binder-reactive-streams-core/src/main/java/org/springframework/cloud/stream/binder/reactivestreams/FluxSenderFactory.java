@@ -16,30 +16,29 @@
 
 package org.springframework.cloud.stream.binder.reactivestreams;
 
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
-import reactor.kafka.sender.Sender;
+import reactor.core.publisher.Mono;
 
-import org.springframework.cloud.stream.binding.StreamListenerResultAdapter;
+import org.springframework.cloud.stream.binding.BindingTargetFactory;
+import org.springframework.cloud.stream.reactive.FluxSender;
 
 /**
  * @author Marius Bogoevici
  */
-public class ReactiveStreamsFluxResultAdapter implements StreamListenerResultAdapter<Publisher, Publisher> {
+public class FluxSenderFactory implements BindingTargetFactory {
 
 	@Override
-	public boolean supports(Class<?> resultType, Class<?> bindingTarget) {
-		return Publisher.class.isAssignableFrom(resultType)
-				&& Publisher.class.isAssignableFrom(bindingTarget);
+	public boolean canCreate(Class<?> clazz) {
+		return FluxSender.class.isAssignableFrom(clazz);
 	}
 
 	@Override
-	public void adapt(Publisher streamListenerResult, Publisher bindingTarget) {
-		if (bindingTarget instanceof Sender.Outbound) {
-			((Sender.Outbound) bindingTarget).send(
-					Flux.from(streamListenerResult).map(x -> new ProducerRecord<>("output", x))).then().subscribe();
-		}
+	public Object createInput(String name) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object createOutput(String name) {
+		return new FluxSenderPublisher<>();
 	}
 }
-

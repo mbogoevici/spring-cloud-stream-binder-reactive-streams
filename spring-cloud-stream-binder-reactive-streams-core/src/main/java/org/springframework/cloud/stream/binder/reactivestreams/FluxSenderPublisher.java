@@ -14,22 +14,29 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.stream.binder.kafka.reactive.test;
+package org.springframework.cloud.stream.binder.reactivestreams;
 
-import org.reactivestreams.Publisher;
+import reactor.core.publisher.DirectProcessor;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import org.springframework.cloud.stream.annotation.Input;
-import org.springframework.cloud.stream.annotation.Output;
 import org.springframework.cloud.stream.reactive.FluxSender;
 
 /**
  * @author Marius Bogoevici
  */
-public interface ReactiveProcessor {
+public class FluxSenderPublisher<T> implements FluxSender {
 
-	@Input
-	Publisher<?> input();
+	private DirectProcessor<T> internalFlux = DirectProcessor.create();
 
-	@Output
-	FluxSender output();
+
+	@Override
+	public Mono<Void> send(Flux<?> flux) {
+		return flux.log().doOnNext(t -> internalFlux.onNext((T) t)).then();
+	}
+
+	public Flux<T> getInternalFlux() {
+		return internalFlux;
+	}
+
 }
