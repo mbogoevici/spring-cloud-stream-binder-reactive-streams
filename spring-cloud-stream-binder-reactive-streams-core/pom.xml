@@ -27,10 +27,5 @@
             <groupId>io.projectreactor</groupId>
             <artifactId>reactor-core</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.projectreactor.kafka</groupId>
-            <artifactId>reactor-kafka</artifactId>
-            <version>1.0.0.BUILD-SNAPSHOT</version>
-        </dependency>
     </dependencies>
 </project>

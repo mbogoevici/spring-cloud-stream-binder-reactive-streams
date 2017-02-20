@@ -55,7 +55,7 @@ import org.springframework.util.ObjectUtils;
 /**
  * @author Marius Bogoevici
  */
-public abstract class ReactiveStreamsBinder extends AbstractBinder<Publisher, ConsumerProperties, ProducerProperties> {
+public abstract class ReactiveStreamsBinder<CP extends ConsumerProperties, PP extends ProducerProperties> extends AbstractBinder<Publisher, CP , PP> {
 
 	private volatile Codec codec;
 
@@ -69,7 +69,7 @@ public abstract class ReactiveStreamsBinder extends AbstractBinder<Publisher, Co
 	EmbeddedHeadersMessageConverter embeddedHeadersMessageConverter = new EmbeddedHeadersMessageConverter();
 
 	@Override
-	protected Binding<Publisher> doBindConsumer(String name, String group, Publisher inputTarget, ConsumerProperties properties) {
+	protected Binding<Publisher> doBindConsumer(String name, String group, Publisher inputTarget, CP properties) {
 		Flux<?> map = createConsumerFlux(name, group, properties);
 		Disposable subscription;
 		Flux<?> effectiveInputTarget;
@@ -115,10 +115,10 @@ public abstract class ReactiveStreamsBinder extends AbstractBinder<Publisher, Co
 		});
 	}
 
-	protected abstract Flux<?> createConsumerFlux(String name, String group, ConsumerProperties consumerProperties);
+	protected abstract Flux<?> createConsumerFlux(String name, String group, CP consumerProperties);
 
 	@Override
-	protected Binding<Publisher> doBindProducer(String name, Publisher outboundBindTarget, ProducerProperties producerProperties) {
+	protected Binding<Publisher> doBindProducer(String name, Publisher outboundBindTarget, PP producerProperties) {
 		Flux<Object> outboundFlux = ((FluxSenderPublisher<Object>) outboundBindTarget).getInternalFlux();
 		outboundFlux = outboundFlux.map(m -> {
 			try {
@@ -147,7 +147,7 @@ public abstract class ReactiveStreamsBinder extends AbstractBinder<Publisher, Co
 		});
 	}
 
-	protected abstract FluxSender createProducerFluxSender(String name, ProducerProperties producerProperties);
+	protected abstract FluxSender createProducerFluxSender(String name, PP producerProperties);
 
 	private Object deserializePayload(Object payload, MimeType contentType) {
 		if (payload instanceof byte[]) {
