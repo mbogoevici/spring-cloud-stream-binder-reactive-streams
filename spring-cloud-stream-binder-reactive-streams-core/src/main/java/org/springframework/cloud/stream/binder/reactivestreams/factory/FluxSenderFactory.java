@@ -14,19 +14,28 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.stream.binder.reactivestreams;
+package org.springframework.cloud.stream.binder.reactivestreams.factory;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.cloud.stream.binding.BindingTargetFactory;
+import org.springframework.cloud.stream.reactive.FluxSender;
 
 /**
  * @author Marius Bogoevici
  */
-@Configuration
-public class ReactiveStreamsFluxSenderConfiguration {
+public class FluxSenderFactory implements BindingTargetFactory {
 
-	@Bean
-	public ReactiveStreamsFluxSenderBinder fluxSenderBinder() {
-		return new ReactiveStreamsFluxSenderBinder();
+	@Override
+	public boolean canCreate(Class<?> clazz) {
+		return FluxSender.class.isAssignableFrom(clazz);
+	}
+
+	@Override
+	public Object createInput(String name) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Object createOutput(String name) {
+		return new FluxSenderPublisher<>();
 	}
 }

@@ -1,0 +1,2 @@
+reactive-kafka:\
+org.springframework.cloud.stream.binder.kafka.reactive.config.ReactiveKafkaBinderConfiguration

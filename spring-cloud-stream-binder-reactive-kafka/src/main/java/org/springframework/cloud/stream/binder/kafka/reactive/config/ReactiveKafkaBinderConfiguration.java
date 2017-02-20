@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.stream.binder.reactivestreams;
+package org.springframework.cloud.stream.binder.kafka.reactive.config;
 
+import org.springframework.cloud.stream.binder.kafka.reactive.ReactiveKafkaBinder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -23,10 +24,10 @@ import org.springframework.context.annotation.Configuration;
  * @author Marius Bogoevici
  */
 @Configuration
-public class ReactiveStreamsKafkaConfiguration {
+public class ReactiveKafkaBinderConfiguration {
 
 	@Bean
-	public ReactiveStreamsBinder reactiveStreamsBinder() {
-		return new ReactiveStreamsBinder();
+	public ReactiveKafkaBinder reactiveKafkaBinder() {
+		return new ReactiveKafkaBinder();
 	}
 }

@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.springframework.cloud.stream.binder.reactivestreams.ReactiveStreamsBinderSupportAutoconfiguration
+org.springframework.cloud.stream.binder.reactivestreams.ReactiveStreamsBinderSupportAutoConfiguration

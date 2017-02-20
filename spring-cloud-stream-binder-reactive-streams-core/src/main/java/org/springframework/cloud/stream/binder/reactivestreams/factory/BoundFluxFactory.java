@@ -14,31 +14,29 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.stream.binder.reactivestreams;
+package org.springframework.cloud.stream.binder.reactivestreams.factory;
 
+
+import reactor.core.publisher.DirectProcessor;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import org.springframework.cloud.stream.binding.BindingTargetFactory;
-import org.springframework.cloud.stream.reactive.FluxSender;
 
 /**
  * @author Marius Bogoevici
  */
-public class FluxSenderFactory implements BindingTargetFactory {
+public class BoundFluxFactory implements BindingTargetFactory {
 
-	@Override
 	public boolean canCreate(Class<?> clazz) {
-		return FluxSender.class.isAssignableFrom(clazz);
+		return Flux.class.isAssignableFrom(clazz);
 	}
 
-	@Override
 	public Object createInput(String name) {
+		return DirectProcessor.create();
+	}
+
+	public Object createOutput(String name) {
 		throw new UnsupportedOperationException();
 	}
 
-	@Override
-	public Object createOutput(String name) {
-		return new FluxSenderPublisher<>();
-	}
 }

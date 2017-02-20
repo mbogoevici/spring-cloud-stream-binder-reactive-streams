@@ -17,6 +17,8 @@
 package org.springframework.cloud.stream.binder.reactivestreams;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.cloud.stream.binder.reactivestreams.factory.BoundFluxFactory;
+import org.springframework.cloud.stream.binder.reactivestreams.factory.FluxSenderFactory;
 import org.springframework.cloud.stream.binding.BindingService;
 import org.springframework.context.annotation.Bean;
 

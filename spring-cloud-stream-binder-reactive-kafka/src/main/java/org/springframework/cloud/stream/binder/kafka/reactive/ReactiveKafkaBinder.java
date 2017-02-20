@@ -14,48 +14,57 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.stream.binder.reactivestreams;
-
+package org.springframework.cloud.stream.binder.kafka.reactive;
 
 import java.util.Collections;
 import java.util.Properties;
 import java.util.UUID;
 
+import com.fasterxml.jackson.databind.deser.std.StringDeserializer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.StringDeserializer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.reactivestreams.Publisher;
+import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.kafka.receiver.Receiver;
 import reactor.kafka.receiver.ReceiverOptions;
 import reactor.kafka.receiver.ReceiverRecord;
 import reactor.kafka.sender.Sender;
 import reactor.kafka.sender.SenderOptions;
 
-import org.springframework.cloud.stream.binding.BindingTargetFactory;
+import org.springframework.cloud.stream.binder.ConsumerProperties;
+import org.springframework.cloud.stream.binder.ProducerProperties;
+import org.springframework.cloud.stream.binder.reactivestreams.ReactiveStreamsBinder;
+import org.springframework.cloud.stream.reactive.FluxSender;
 
 /**
  * @author Marius Bogoevici
  */
-public class BoundFluxFactory implements BindingTargetFactory {
+public class ReactiveKafkaBinder extends ReactiveStreamsBinder {
 
-	public boolean canCreate(Class<?> clazz) {
-		return Publisher.class.isAssignableFrom(clazz);
-	}
-
-	public Object createInput(String name) {
+	@Override
+	protected Flux<?> createConsumerFlux(String name, ConsumerProperties consumerProperties) {
 		Properties configProperties = new Properties();
 		configProperties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
 		configProperties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, UUID.randomUUID().toString());
 		configProperties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
 		configProperties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-		Flux<ReceiverRecord<Object, Object>> dataFlux = Receiver.create(ReceiverOptions.create(configProperties).subscription(Collections.singleton(name))).receive();
+		Flux<ReceiverRecord<Object, Object>> dataFlux =
+				Receiver.create(ReceiverOptions.create(configProperties)
+										.subscription(Collections.singleton(name))).receive();
 		return dataFlux.map(rr -> rr.record().value());
 	}
 
-	public Object createOutput(String name) {
-		throw new UnsupportedOperationException();
+	@Override
+	protected FluxSender createProducerFluxSender(String name, ProducerProperties producerProperties) {
+		Properties configProperties = new Properties();
+		configProperties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+		configProperties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+		configProperties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+		return flux -> Sender.create(SenderOptions.create(configProperties))
+				.outbound()
+				.send(flux.map(v -> new ProducerRecord<>(name, v))).then();
 	}
-
 }

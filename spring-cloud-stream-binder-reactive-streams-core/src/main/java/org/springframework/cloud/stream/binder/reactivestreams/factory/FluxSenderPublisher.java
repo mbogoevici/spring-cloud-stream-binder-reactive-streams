@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.stream.binder.reactivestreams;
+package org.springframework.cloud.stream.binder.reactivestreams.factory;
 
+import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
 import reactor.core.publisher.DirectProcessor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -25,7 +27,7 @@ import org.springframework.cloud.stream.reactive.FluxSender;
 /**
  * @author Marius Bogoevici
  */
-public class FluxSenderPublisher<T> implements FluxSender {
+public class FluxSenderPublisher<T> implements FluxSender, Publisher<T> {
 
 	private DirectProcessor<T> internalFlux = DirectProcessor.create();
 
@@ -39,4 +41,8 @@ public class FluxSenderPublisher<T> implements FluxSender {
 		return internalFlux;
 	}
 
+	@Override
+	public void subscribe(Subscriber<? super T> subscriber) {
+		internalFlux.subscribe(subscriber);
+	}
 }

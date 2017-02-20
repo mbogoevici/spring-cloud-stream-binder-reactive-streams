@@ -1,5 +1,0 @@
-reactive-kafka:\
-org.springframework.cloud.stream.binder.reactivestreams.ReactiveStreamsKafkaConfiguration
-
-reactive-flux-sender:\
-org.springframework.cloud.stream.binder.reactivestreams.ReactiveStreamsFluxSenderConfiguration
