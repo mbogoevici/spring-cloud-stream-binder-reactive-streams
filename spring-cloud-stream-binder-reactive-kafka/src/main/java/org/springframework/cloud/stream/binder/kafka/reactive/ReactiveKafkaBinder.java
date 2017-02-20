@@ -24,6 +24,8 @@ import com.fasterxml.jackson.databind.deser.std.StringDeserializer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.ByteArrayDeserializer;
+import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
@@ -45,12 +47,12 @@ import org.springframework.cloud.stream.reactive.FluxSender;
 public class ReactiveKafkaBinder extends ReactiveStreamsBinder {
 
 	@Override
-	protected Flux<?> createConsumerFlux(String name, ConsumerProperties consumerProperties) {
+	protected Flux<?> createConsumerFlux(String name, String group, ConsumerProperties consumerProperties) {
 		Properties configProperties = new Properties();
 		configProperties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-		configProperties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, UUID.randomUUID().toString());
-		configProperties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-		configProperties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+		configProperties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, group);
+		configProperties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ByteArrayDeserializer.class.getName());
+		configProperties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ByteArrayDeserializer.class.getName());
 		Flux<ReceiverRecord<Object, Object>> dataFlux =
 				Receiver.create(ReceiverOptions.create(configProperties)
 										.subscription(Collections.singleton(name))).receive();
@@ -61,8 +63,8 @@ public class ReactiveKafkaBinder extends ReactiveStreamsBinder {
 	protected FluxSender createProducerFluxSender(String name, ProducerProperties producerProperties) {
 		Properties configProperties = new Properties();
 		configProperties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-		configProperties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-		configProperties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+		configProperties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class.getName());
+		configProperties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class.getName());
 		return flux -> Sender.create(SenderOptions.create(configProperties))
 				.outbound()
 				.send(flux.map(v -> new ProducerRecord<>(name, v))).then();

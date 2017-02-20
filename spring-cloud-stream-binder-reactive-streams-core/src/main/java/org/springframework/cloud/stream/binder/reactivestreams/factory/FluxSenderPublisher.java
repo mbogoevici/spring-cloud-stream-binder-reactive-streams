@@ -31,10 +31,9 @@ public class FluxSenderPublisher<T> implements FluxSender, Publisher<T> {
 
 	private DirectProcessor<T> internalFlux = DirectProcessor.create();
 
-
 	@Override
 	public Mono<Void> send(Flux<?> flux) {
-		return flux.log().doOnNext(t -> internalFlux.onNext((T) t)).then();
+		return flux.doOnNext(t -> internalFlux.onNext((T) t)).then();
 	}
 
 	public Flux<T> getInternalFlux() {

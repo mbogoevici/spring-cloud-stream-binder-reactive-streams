@@ -20,6 +20,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.cloud.stream.binder.reactivestreams.factory.BoundFluxFactory;
 import org.springframework.cloud.stream.binder.reactivestreams.factory.FluxSenderFactory;
 import org.springframework.cloud.stream.binding.BindingService;
+import org.springframework.cloud.stream.config.BindingServiceProperties;
+import org.springframework.cloud.stream.converter.CompositeMessageConverterFactory;
 import org.springframework.context.annotation.Bean;
 
 /**
@@ -34,8 +36,8 @@ public class ReactiveStreamsBinderSupportAutoconfiguration {
 	}
 
 	@Bean
-	public FluxSenderFactory fluxSenderFactory() {
-		return new FluxSenderFactory();
+	public FluxSenderFactory fluxSenderFactory(BindingServiceProperties bindingServiceProperties, CompositeMessageConverterFactory compositeMessageConverterFactory) {
+		return new FluxSenderFactory(bindingServiceProperties, compositeMessageConverterFactory);
 	}
 
 	@Bean

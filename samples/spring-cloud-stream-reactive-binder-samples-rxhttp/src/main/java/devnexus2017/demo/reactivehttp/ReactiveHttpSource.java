@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.messaging.Source;
 import org.springframework.cloud.stream.reactive.ReactiveSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -37,6 +36,6 @@ public class ReactiveHttpSource {
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	@ResponseBody
 	Mono<Void> receiveData(@RequestBody Flux<String> input, @RequestHeader(HttpHeaders.CONTENT_TYPE) Object contentType) {
-		return source.output().send(input);
+		return source.output().send(input.map(s -> MessageBuilder.withPayload(s).setHeader(MessageHeaders.CONTENT_TYPE, contentType).build()));
 	}
 }
