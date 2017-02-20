@@ -37,6 +37,6 @@ public class ReactiveHttpSource {
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	@ResponseBody
 	Mono<Void> receiveData(@RequestBody Flux<String> input, @RequestHeader(HttpHeaders.CONTENT_TYPE) Object contentType) {
-		return source.output().send(input).then();
+		return source.output().send(input);
 	}
 }
