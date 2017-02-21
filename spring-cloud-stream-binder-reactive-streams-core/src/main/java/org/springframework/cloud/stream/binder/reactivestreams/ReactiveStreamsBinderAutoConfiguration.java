@@ -28,7 +28,7 @@ import org.springframework.context.annotation.Bean;
  * @author Marius Bogoevici
  */
 @ConditionalOnBean(BindingService.class)
-public class ReactiveStreamsBinderSupportAutoconfiguration {
+public class ReactiveStreamsBinderAutoConfiguration {
 
 	@Bean
 	public BoundFluxFactory boundFluxFactory() {
