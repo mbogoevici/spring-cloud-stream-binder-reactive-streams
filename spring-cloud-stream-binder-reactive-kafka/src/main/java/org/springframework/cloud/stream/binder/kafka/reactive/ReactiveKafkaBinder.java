@@ -82,7 +82,7 @@ public class ReactiveKafkaBinder extends ReactiveStreamsBinder <ExtendedConsumer
 		Flux<ReceiverRecord<Object, Object>> dataFlux =
 				Receiver.create(ReceiverOptions.create(configProperties)
 										.subscription(Collections.singleton(name))).receive();
-		return dataFlux.map(rr -> rr.record().value());
+		return dataFlux.map(rr -> rr.value());
 	}
 
 	@Override
