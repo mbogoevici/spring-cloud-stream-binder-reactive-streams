@@ -43,7 +43,6 @@ import org.springframework.cloud.stream.binder.kafka.provisioning.KafkaTopicProv
 import org.springframework.cloud.stream.binder.reactivestreams.ReactiveStreamsBinder;
 import org.springframework.cloud.stream.reactive.FluxSender;
 import org.springframework.integration.codec.Codec;
-import org.springframework.messaging.MessageChannel;
 
 /**
  * @author Marius Bogoevici
